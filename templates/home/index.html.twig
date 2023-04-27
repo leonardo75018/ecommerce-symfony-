@@ -4,17 +4,64 @@
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper { margin: 1em auto;  width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .dashboard_section { 
+            width: 100%;
+            display: flex;
+    }
+    .producs_section{width: 70%}
+    .form_section{
+            width: 30%;
+        }
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    {# <h1>Creation des produits </h1> #}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/leonardinho/Desktop/project/src/Controller/HomeController.php'|file_link(0) }}">src/Controller/HomeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/leonardinho/Desktop/project/templates/home/index.html.twig'|file_link(0) }}">templates/home/index.html.twig</a></code></li>
-    </ul>
+
+    <div class="dashboard_section"> 
+       <div class="producs_section">
+         <table>
+         {% for p in  products %}
+             <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prix</th>
+                    <th>Disponibilité</th>
+                    <th>Origine</th>
+                    <th>Marque</th>
+                    <th>Description</th>
+                    <th>Poids</th>
+                  
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.price }}</td>
+                    <td>{{ p.disponibility }}</td>
+                    <td>{{ p.origin }}</td>
+                    <td>{{ p.brand }}</td>
+                    <td>{{ p.description }}</td>
+                    <td>{{ p.weigth }}</td>
+                   <td>
+                    <a href="{{path("cart_add",{"id":p.id})}}">
+                        <button class="btn btn-primary">card</button>
+                    </a>
+                    </td>
+                </tr>
+            </tbody>
+
+
+         {% endfor %}
+           
+        </table>
+        </div>
+        <div class="form_section">
+             {{ form(productForm) }}
+         </div>
+    </div>
+
 </div>
 {% endblock %}

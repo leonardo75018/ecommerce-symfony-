@@ -4,8 +4,12 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Cocur\Slugify\Slugify;
+
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -39,9 +43,16 @@ class Product
     #[ORM\Column]
     private ?\DateTime $created_at = null;
 
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'products')]
+    private Collection $category;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?Brand $brand = null;
+
     public function __construct()
     {
         $this->created_at = new  \DateTime();
+        $this->category = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -60,6 +71,11 @@ class Product
 
         return $this;
     }
+
+    // public function getSlug()
+    // {
+    //     return (new Slugify())->slugfy($this->name);
+    // }
 
     public function getDescription(): ?string
     {
@@ -102,6 +118,11 @@ class Product
         return $this->price;
     }
 
+    public function getFormatedPrice(): string
+    {
+        return number_format($this->price, 0,  " ",  " ");
+    }
+
     public function setPrice(float $price): self
     {
         $this->price = $price;
@@ -133,15 +154,50 @@ class Product
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    public function setCreatedAt(\DateTime $created_at): self
     {
         $this->created_at = $created_at;
 
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategory(): Collection
+    {
+        return $this->category;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->category->contains($category)) {
+            $this->category->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        $this->category->removeElement($category);
+
+        return $this;
+    }
+
+    public function getBrand(): ?Brand
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(?Brand $brand): self
+    {
+        $this->brand = $brand;
         return $this;
     }
 }
