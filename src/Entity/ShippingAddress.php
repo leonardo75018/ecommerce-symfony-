@@ -16,8 +16,6 @@ class ShippingAddress
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?User $user = null;
 
     #[ORM\Column(length: 255)]
     private ?string $recipientName = null;
@@ -37,30 +35,27 @@ class ShippingAddress
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
-    #[ORM\OneToMany(mappedBy: 'shippingAddress', targetEntity: Basket::class, orphanRemoval: true)]
+
+
+
+
+    #[ORM\OneToMany(mappedBy: 'shippingAddress', targetEntity: Basket::class)]
     private Collection $baskets;
+
+    #[ORM\ManyToOne(inversedBy: 'shippingAddress')]
+    private ?User $user = null;
 
     public function __construct()
     {
         $this->baskets = new ArrayCollection();
     }
 
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
 
     public function getRecipientName(): ?string
     {
@@ -134,6 +129,11 @@ class ShippingAddress
         return $this;
     }
 
+
+
+
+
+
     /**
      * @return Collection<int, Basket>
      */
@@ -160,6 +160,18 @@ class ShippingAddress
                 $basket->setShippingAddress(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

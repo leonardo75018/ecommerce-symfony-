@@ -49,10 +49,14 @@ class Product
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?Brand $brand = null;
 
+    #[ORM\ManyToMany(targetEntity: Basket::class, mappedBy: 'productList')]
+    private Collection $baskets;
+
     public function __construct()
     {
         $this->created_at = new  \DateTime();
         $this->category = new ArrayCollection();
+        $this->baskets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -198,6 +202,33 @@ class Product
     public function setBrand(?Brand $brand): self
     {
         $this->brand = $brand;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Basket>
+     */
+    public function getBaskets(): Collection
+    {
+        return $this->baskets;
+    }
+
+    public function addBasket(Basket $basket): self
+    {
+        if (!$this->baskets->contains($basket)) {
+            $this->baskets->add($basket);
+            $basket->addProductList($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBasket(Basket $basket): self
+    {
+        if ($this->baskets->removeElement($basket)) {
+            $basket->removeProductList($this);
+        }
+
         return $this;
     }
 }

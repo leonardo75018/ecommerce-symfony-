@@ -11,13 +11,11 @@ class BasketType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
-
-        // dd($options["user"]);
         $builder
-            ->add('user');
+            ->add('basketTotal')
+            ->add('user')
+            ->add('productList');
     }
-
 
     public function configureOptions(OptionsResolver $resolver): void
     {

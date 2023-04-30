@@ -16,8 +16,6 @@ class BillingAddress
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?User $user = null;
 
     #[ORM\Column(length: 255)]
     private ?string $recipientName = null;
@@ -40,30 +38,27 @@ class BillingAddress
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
+
+
+
     #[ORM\OneToMany(mappedBy: 'billingAddress', targetEntity: Basket::class)]
     private Collection $baskets;
+
+    #[ORM\ManyToOne(inversedBy: 'billingAddress')]
+    private ?User $user = null;
 
     public function __construct()
     {
         $this->baskets = new ArrayCollection();
     }
 
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
 
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
 
     public function getRecipientName(): ?string
     {
@@ -149,6 +144,11 @@ class BillingAddress
         return $this;
     }
 
+
+
+
+
+
     /**
      * @return Collection<int, Basket>
      */
@@ -175,6 +175,18 @@ class BillingAddress
                 $basket->setBillingAddress(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

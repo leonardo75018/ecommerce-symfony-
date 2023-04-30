@@ -47,10 +47,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Basket $basket = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ShippingAddress::class)]
+    private Collection $shippingAddress;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: BillingAddress::class)]
+    private Collection $billingAddress;
+
+
+
+
 
     public function __construct()
     {
         $this->created_at = new  \DateTime();
+        $this->shippingAddress = new ArrayCollection();
+        $this->billingAddress = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -196,5 +207,65 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->id;
+    }
+
+    /**
+     * @return Collection<int, ShippingAddress>
+     */
+    public function getShippingAddress(): Collection
+    {
+        return $this->shippingAddress;
+    }
+
+    public function addShippingAddress(ShippingAddress $shippingAddress): self
+    {
+        if (!$this->shippingAddress->contains($shippingAddress)) {
+            $this->shippingAddress->add($shippingAddress);
+            $shippingAddress->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShippingAddress(ShippingAddress $shippingAddress): self
+    {
+        if ($this->shippingAddress->removeElement($shippingAddress)) {
+            // set the owning side to null (unless already changed)
+            if ($shippingAddress->getUser() === $this) {
+                $shippingAddress->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BillingAddress>
+     */
+    public function getBillingAddress(): Collection
+    {
+        return $this->billingAddress;
+    }
+
+    public function addBillingAddress(BillingAddress $billingAddress): self
+    {
+        if (!$this->billingAddress->contains($billingAddress)) {
+            $this->billingAddress->add($billingAddress);
+            $billingAddress->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBillingAddress(BillingAddress $billingAddress): self
+    {
+        if ($this->billingAddress->removeElement($billingAddress)) {
+            // set the owning side to null (unless already changed)
+            if ($billingAddress->getUser() === $this) {
+                $billingAddress->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

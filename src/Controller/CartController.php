@@ -20,6 +20,8 @@ class CartController extends AbstractController
         ]);
     }
 
+    //Ajouter produit au panier
+
     #[Route('/cart/add/{id<\d+>}', name: 'cart_add')]
     public function addToRoute(CartService $cartService, int $id): Response
     {
@@ -48,4 +50,16 @@ class CartController extends AbstractController
         $cartService->icrementQuantity($id);
         return $this->redirectToRoute('property.shop');
     }
+
+
+    //Creation du panier 
+
+
+
+
+
+
+
+
+
 }

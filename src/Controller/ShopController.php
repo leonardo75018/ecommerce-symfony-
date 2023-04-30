@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Form\BasketType;
 use App\Service\CartService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,13 +16,14 @@ class ShopController extends AbstractController
     public function index(EntityManagerInterface $em, CartService $cartService): Response
     {
 
-        $product = new Product();
+
         $products = $em->getRepository(Product::class)->findAll();
         return $this->render('shop/index.html.twig', [
             "products" => $products,
-            "carts" => $cartService->getTotal()
+            "carts" => $cartService->getTotal(),
         ]);
     }
+
 
     #[Route('/products/{id}', name: 'property.show')]
     public function ShowOneProduct(EntityManagerInterface $em,  $id): Response
@@ -30,7 +32,8 @@ class ShopController extends AbstractController
         $product = $em->getRepository(Product::class)->find($id);
 
         return $this->render('shop/one_product.html.twig', [
-            "product" => $product
+            "product" => $product,
+
         ]);
     }
 }
